@@ -27,7 +27,7 @@ def main():
     else:
          datamodule = CIFAR10DataModule('.')
     
-    device = torch.device("cuda" if cuda else "cpu")
+    device = "cuda" if cuda else "cpu"
     model = VAE()
 
     start_training(args.epochs, model, device, datamodule)
