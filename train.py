@@ -24,10 +24,10 @@ def main():
 
     if args.mnist:
          datamodule = MNISTDataModule('.', batch_size=args.batch_size)
-         model = VAE(input_height=28)
+         model = VAE(args.mnist, input_height=28)
     else:
          datamodule = CIFAR10DataModule('.', batch_size=args.batch_size)
-         model = VAE()
+         model = VAE(args.mnist)
     
     device = "cuda" if cuda else "cpu"
 
