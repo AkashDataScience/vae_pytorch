@@ -21,6 +21,7 @@ def save_sample_output(model, loader, device, path, is_mnist, image_no=5):
 
         while label == wrong_label:
             wrong_label = torch.randint(low=0, high=10, size=(1,))[0]
+        wrong_label.to(device)
         
         if is_mnist:
             plt.title(f'Input:{label.cpu()} Label:{wrong_label.cpu()}')
