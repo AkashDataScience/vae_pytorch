@@ -1,7 +1,9 @@
+import os
 import torch
 import argparse
 from model import VAE
 import pytorch_lightning as pl
+from utils import save_sample_output
 from pl_bolts.datamodules import MNISTDataModule, CIFAR10DataModule
 
 def get_args():
@@ -19,19 +21,29 @@ def start_training(num_epochs, model, device, data_loader):
 def main():
     args = get_args()
 
+    os.makedirs('images', exist_ok=True)
+
     cuda = torch.cuda.is_available()
     print("CUDA Available?", cuda)
 
     if args.mnist:
          datamodule = MNISTDataModule('.', batch_size=args.batch_size)
          model = VAE(args.mnist, input_height=28)
+         data_type = "mnist"
     else:
          datamodule = CIFAR10DataModule('.', batch_size=args.batch_size)
          model = VAE(args.mnist)
+         data_type = "CIFAR10"
     
     device = "cuda" if cuda else "cpu"
 
     start_training(args.epochs, model, device, datamodule)
+    
+    datamodule.setup(stage="test")
+    test_dataloader = datamodule.test_dataloader()
+
+    save_sample_output(model, test_dataloader, device, f'images/{data_type}_results.png', args.mnist, 25)
+    torch.save(model.state_dict(), f'{data_type}_vae.pth')
 
 if __name__ == "__main__":
      main()
