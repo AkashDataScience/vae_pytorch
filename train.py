@@ -23,9 +23,9 @@ def main():
     print("CUDA Available?", cuda)
 
     if args.mnist:
-         datamodule = BinaryMNISTDataModule('.')
+         datamodule = BinaryMNISTDataModule('.', batch_size=args.batch_size)
     else:
-         datamodule = CIFAR10DataModule('.')
+         datamodule = CIFAR10DataModule('.', batch_size=args.batch_size)
     
     device = "cuda" if cuda else "cpu"
     model = VAE()
