@@ -67,6 +67,30 @@ class VAE(pl.LightningModule):
         kl = kl.sum(-1)
         return kl
 
+    def forward(self, batch):
+        x, y = batch
+
+        # encode x to get the mu and variance parameters
+        x_encoded = self.encoder(x) 
+        y_encoded = self.label_embed(y)
+
+        img_mu, img_log_var = self.img_fc_mu(x_encoded), self.img_fc_var(x_encoded)
+        lbl_mu, lbl_log_var = self.lbl_fc_mu(y_encoded), self.lbl_fc_var(y_encoded)
+        
+        mu = torch.cat((img_mu.unsqueeze(0), lbl_mu.unsqueeze(0)), dim=0)
+        log_var = torch.cat((img_log_var.unsqueeze(0), lbl_log_var.unsqueeze(0)), dim=0)
+
+        mu, log_var = self.experts(mu, log_var)
+
+        # sample z from q
+        std = torch.exp(log_var / 2)
+        q = torch.distributions.Normal(mu, std)
+        z = q.rsample()
+
+        # decoded 
+        x_hat = self.decoder(z)
+        return x_hat
+
     def training_step(self, batch, batch_idx):
         x, y = batch
 
