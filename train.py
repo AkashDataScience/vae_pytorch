@@ -36,9 +36,9 @@ def main():
          data_type = "CIFAR10"
     
     device = "cuda" if cuda else "cpu"
-
-    start_training(args.epochs, model, device, datamodule)
     
+    start_training(args.epochs, model, device, datamodule)
+    model =  model.to(device)
     datamodule.setup(stage="test")
     test_dataloader = datamodule.test_dataloader()
 
