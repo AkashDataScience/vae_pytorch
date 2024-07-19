@@ -13,7 +13,7 @@ def get_args():
     return args
 
 def start_training(num_epochs, model, device, data_loader):
-        trainer = pl.Trainer(accelerator = device, max_epochs=num_epochs, progress_bar_refresh_rate=10)
+        trainer = pl.Trainer(accelerator = device, max_epochs=num_epochs)
         trainer.fit(model, data_loader)
 
 def main():
