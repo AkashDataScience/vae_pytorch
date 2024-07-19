@@ -73,8 +73,8 @@ class VAE(pl.LightningModule):
         img_mu, img_log_var = self.img_fc_mu(x_encoded), self.img_fc_var(x_encoded)
         lbl_mu, lbl_log_var = self.lbl_fc_mu(y_encoded), self.lbl_fc_var(y_encoded)
         
-        mu = torch.cat(img_mu.unsqueeze(0), lbl_mu.unsqueeze(0), dim=0)
-        log_var = torch.cat(img_log_var.unsqueeze(0), lbl_log_var.unsqueeze(0), dim=0)
+        mu = torch.cat((img_mu.unsqueeze(0), lbl_mu.unsqueeze(0)), dim=0)
+        log_var = torch.cat((img_log_var.unsqueeze(0), lbl_log_var.unsqueeze(0)), dim=0)
 
         mu, log_var = self.experts(mu, log_var)
 
