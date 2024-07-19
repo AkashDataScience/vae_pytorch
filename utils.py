@@ -21,21 +21,18 @@ def save_sample_output(model, loader, device, path, is_mnist, image_no=5):
 
         while label == wrong_label:
             wrong_label = torch.randint(low=0, high=10, size=(1,))[0]
-        wrong_label.to(device)
 
-        input_img_lbl = image.unsqueeze(0), wrong_label.unsqueeze(0)
+        input_img_lbl = image.unsqueeze(0), wrong_label.unsqueeze(0).to(device)
 
         with torch.no_grad():
             pred_image = model(input_img_lbl)
 
         if is_mnist:
-            plt.title(f'Input:{label.cpu()} Label:{wrong_label.cpu()}')
+            plt.title(f'Input:{label.cpu()} Label:{wrong_label.cpu()}', fontsize=16)
         else:
-            plt.title(f'Input:{CIFAR_CLASS_NAMES[label.cpu()]} Label:{CIFAR_CLASS_NAMES[wrong_label.cpu()]}')
+            plt.title(f'Input:{CIFAR_CLASS_NAMES[label.cpu()]} Label:{CIFAR_CLASS_NAMES[wrong_label.cpu()]}', fontsize=16)
 
-        pred_image = np.array(pred_image.cpu())
-        pred_image = np.transpose(pred_image, (1, 2, 0))
-        plt.imshow(pred_image)
+        plt.imshow(np.transpose(pred_image[0].cpu().numpy(), (1, 2, 0)))
     
     plt.tight_layout()
     plt.savefig(path)
