@@ -2,7 +2,7 @@ import torch
 import argparse
 from model import VAE
 import pytorch_lightning as pl
-from pl_bolts.datamodules import BinaryMNISTDataModule, CIFAR10DataModule
+from pl_bolts.datamodules import MNISTDataModule, CIFAR10DataModule
 
 def get_args():
     parser = argparse.ArgumentParser(description='PyTorch VAE Training')
@@ -23,12 +23,13 @@ def main():
     print("CUDA Available?", cuda)
 
     if args.mnist:
-         datamodule = BinaryMNISTDataModule('.', batch_size=args.batch_size)
+         datamodule = MNISTDataModule('.', batch_size=args.batch_size)
+         model = VAE(input_height=28)
     else:
          datamodule = CIFAR10DataModule('.', batch_size=args.batch_size)
+         model = VAE()
     
     device = "cuda" if cuda else "cpu"
-    model = VAE()
 
     start_training(args.epochs, model, device, datamodule)
 

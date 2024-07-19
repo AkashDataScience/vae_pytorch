@@ -8,7 +8,7 @@ from pl_bolts.models.autoencoders.components import (
 )
 
 class VAE(pl.LightningModule):
-    def __init__(self, enc_out_dim=512, latent_dim=256, input_height=32, num_embed=10):
+    def __init__(self, is_mnist, enc_out_dim=512, latent_dim=256, input_height=32, num_embed=10):
         super().__init__()
 
         self.save_hyperparameters()
@@ -21,6 +21,10 @@ class VAE(pl.LightningModule):
             first_conv=False, 
             maxpool1=False
         )
+
+        if is_mnist:
+            self.encoder.conv1 = nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1, bias=False)
+            self.decoder.conv1 = nn.Conv2d(64*self.decoder.expansion, 1, kernel_size=3, stride=1, padding=3, bias=False)
 
         # distribution parameters
         self.img_fc_mu = nn.Linear(enc_out_dim, latent_dim)
