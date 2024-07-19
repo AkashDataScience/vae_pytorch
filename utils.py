@@ -23,9 +23,9 @@ def save_sample_output(model, loader, device, path, is_mnist, image_no=5):
             wrong_label = torch.randint(low=0, high=10, size=(1,))[0]
         
         if is_mnist:
-            plt.title(f'Input:{label.numpy()} Label:{wrong_label.numpy()}')
+            plt.title(f'Input:{label.cpu()} Label:{wrong_label.cpu()}')
         else:
-            plt.title(f'Input:{CIFAR_CLASS_NAMES[label.numpy()]} Label:{CIFAR_CLASS_NAMES[wrong_label.numpy()]}')
+            plt.title(f'Input:{CIFAR_CLASS_NAMES[label.cpu()]} Label:{CIFAR_CLASS_NAMES[wrong_label.cpu()]}')
 
         input_img_lbl = image.unsqueeze(0), wrong_label.unsqueeze(0)
 
